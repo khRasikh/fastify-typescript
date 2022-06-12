@@ -1,10 +1,8 @@
 import fastify from 'fastify'
-
+const {indexController} = require("./practice/controllers/indexController")
 const server = fastify()
 
-server.get('/', async (request, reply) => {
-  return {message: "Success"}
-})
+server.get('/', indexController)
 
 server.listen({ port: 8080 }, (err, address) => {
   if (err) {
