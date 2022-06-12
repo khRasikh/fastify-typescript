@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
 const server = (0, fastify_1.default)();
-server.get('/ping', (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    return 'pong\n';
+server.get('/', (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    return { message: "Success" };
 }));
 server.listen({ port: 8080 }, (err, address) => {
     if (err) {
