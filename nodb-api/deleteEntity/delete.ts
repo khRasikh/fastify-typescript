@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { collections } from "./../../DB";
 import dotenv from 'dotenv'; 
 dotenv.config(); 
-export async function getUsers(req: any, reply: any) {
+export async function deleteUser(req: any, res: any) {
   const client: mongoDB.MongoClient = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`
   );
 
@@ -19,14 +19,18 @@ export async function getUsers(req: any, reply: any) {
   const id = req?.params?.id;
 
   try {
-    const newUser = req.body;
-    const result = await collections.users.insertOne(newUser);
+    const query = { _id: new ObjectId(id) };
+    const result = await collections.users.deleteOne(query);
 
-    result
-        ? reply.status(201).send(`Successfully created a new user with id ${result.insertedId}`)
-        : reply.status(500).send("Failed to create a new user.");
+    if (result && result.deletedCount) {
+        res.status(202).send(`Successfully removed user with id ${id}`);
+    } else if (!result) {
+        res.status(400).send(`Failed to remove user with id ${id}`);
+    } else if (!result.deletedCount) {
+        res.status(404).send(`User with id ${id} does not exist`);
+    }
 } catch (error) {
     console.error(error);
-    reply.status(400).send(error);
+    res.status(400).send(error);
 }
 }

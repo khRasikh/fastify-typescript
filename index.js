@@ -8,6 +8,7 @@ const userController_1 = __importDefault(require("./practice/controllers/userCon
 const mongodb_1 = __importDefault(require("@fastify/mongodb"));
 const DB_1 = require("./DB");
 const create_1 = require("./nodb-api/createEntity/create");
+const delete_1 = require("./nodb-api/deleteEntity/delete");
 const app = (0, fastify_1.default)({ logger: false });
 app.register(mongodb_1.default, {
     // force to close the mongodb connection when app stopped
@@ -16,7 +17,6 @@ app.register(mongodb_1.default, {
     url: 'mongodb://localhost:27017/vertrical'
 });
 app.post("/users", userController_1.default);
-app.put("/users", userController_1.default);
 // app.get<{Querystring: IQueryInterface, Headers: IHeaders, 
 // Reply: IReply}>("/users", async(req, res)=>{
 //   const result = app.mongo.client.db('vertrical').collection('nodb-api-v1');
@@ -31,6 +31,7 @@ app.patch("/users", userController_1.default);
 app.get("/users", DB_1.connectToDatabase);
 app.get("/api/ghost", DB_1.connectToDatabase);
 app.get("/api/ghost/:id", create_1.getUsers);
+app.delete("/api/ghost/:id", delete_1.deleteUser);
 /**Start MongoDB */
 /**End MongoDB */
 app.listen({ port: 8080 }, (err, address) => {

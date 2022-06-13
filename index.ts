@@ -3,6 +3,7 @@ import userController from './practice/controllers/userController'
 import DBConnection from '@fastify/mongodb'
 import {connectToDatabase} from './DB'
 import {getUsers} from './nodb-api/createEntity/create'
+import {deleteUser} from './nodb-api/deleteEntity/delete'
 
 const app: FastifyInstance = fastify({ logger: false})
 
@@ -29,9 +30,7 @@ app.register(DBConnection, {
 })
 app.post<{Querystring: IQueryInterface, Headers: IHeaders, 
 Reply: IReply}>("/users", userController)
-
-app.put<{Querystring: IQueryInterface, Headers: IHeaders, 
-Reply: IReply}>("/users", userController)
+  
 
 // app.get<{Querystring: IQueryInterface, Headers: IHeaders, 
 // Reply: IReply}>("/users", async(req, res)=>{
@@ -60,6 +59,7 @@ interface IBody {
 app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/users", connectToDatabase)    
 app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/api/ghost", connectToDatabase)    
 app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/api/ghost/:id", getUsers)    
+app.delete<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/api/ghost/:id", deleteUser)    
 
 /**Start MongoDB */
   
