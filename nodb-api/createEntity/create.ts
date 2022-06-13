@@ -1,20 +1,31 @@
-import { FastifyReply, FastifyRequest } from 'fastify'; 
-import { collections } from "../../DB";
-import users from "../model/Users";
+import * as mongoDB from "mongodb";
+import { ObjectId } from "mongodb";
+import { collections } from "./../../DB";
+export async function getUsers(req: any, reply: any) {
+  const client: mongoDB.MongoClient = new mongoDB.MongoClient(
+    "mongodb://localhost:27017"
+  );
 
-async function route(app:any, opts:any, next:any){
-    app.get("/api/users", async (_req: FastifyRequest, res: FastifyReply) => {
-        try {
-           const users = await collections.users?.find({})
-    
-            res.status(200).send(users);
-        } catch (error) {
-            res.status(500).send(error);
+  await client.connect();
+
+  const db: mongoDB.Db = client.db("vertrical");
+
+  const usersCollection: mongoDB.Collection = db.collection("users");
+
+  collections.users = usersCollection;
+  
+
+  const id = req?.params?.id;
+
+    try {
+        
+        const query = { _id: new ObjectId(id) };
+        const game = (await collections.users.findOne(query));
+
+        if (game) {
+            reply.status(200).send(game);
         }
-      
-    });
-
-    next(); 
+    } catch (error) {
+        reply.status(404).send(`Unable to find matching document with id: ${req.params.id}`);
+    }
 }
-
-export default route; 

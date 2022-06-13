@@ -2,7 +2,8 @@ import fastify, { FastifyInstance } from 'fastify';
 import userController from './practice/controllers/userController'
 import DBConnection from '@fastify/mongodb'
 import {connectToDatabase} from './DB'
-import nodbRoutes from './nodb-api/routes'
+import {getUsers} from './nodb-api/createEntity/create'
+
 const app: FastifyInstance = fastify({ logger: false})
 
 interface IQueryInterface {
@@ -56,16 +57,12 @@ interface IBody {
   levels: any, 
   classes: any, 
 }
-app.get<{Querystring: IBody, Headers: IHeaders, 
-  Reply: IReply}>("/users", connectToDatabase)    
+app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/users", connectToDatabase)    
+app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/api/ghost", connectToDatabase)    
+app.get<{Querystring: IBody, Headers: IHeaders, Reply: IReply}>("/api/ghost/:id", getUsers)    
 
-// app.get<{Querystring: IBody, Headers: IHeaders, 
-//     Reply: IReply}>("/users", connectToDatabase)    
-/**End */
-app.register(nodbRoutes)
-/**Start MongoDB */ 
-
- 
+/**Start MongoDB */
+  
 /**End MongoDB */
 app.listen({ port: 8080 }, (err, address) => {
   if (err) {

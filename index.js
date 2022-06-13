@@ -7,7 +7,7 @@ const fastify_1 = __importDefault(require("fastify"));
 const userController_1 = __importDefault(require("./practice/controllers/userController"));
 const mongodb_1 = __importDefault(require("@fastify/mongodb"));
 const DB_1 = require("./DB");
-const routes_1 = __importDefault(require("./nodb-api/routes"));
+const create_1 = require("./nodb-api/createEntity/create");
 const app = (0, fastify_1.default)({ logger: false });
 app.register(mongodb_1.default, {
     // force to close the mongodb connection when app stopped
@@ -29,10 +29,8 @@ app.put("/users", userController_1.default);
 // })
 app.patch("/users", userController_1.default);
 app.get("/users", DB_1.connectToDatabase);
-// app.get<{Querystring: IBody, Headers: IHeaders, 
-//     Reply: IReply}>("/users", connectToDatabase)    
-/**End */
-app.register(routes_1.default);
+app.get("/api/ghost", DB_1.connectToDatabase);
+app.get("/api/ghost/:id", create_1.getUsers);
 /**Start MongoDB */
 /**End MongoDB */
 app.listen({ port: 8080 }, (err, address) => {
