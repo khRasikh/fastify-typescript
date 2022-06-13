@@ -30,8 +30,10 @@ app.post("/users", userController_1.default);
 app.patch("/users", userController_1.default);
 app.get("/users", DB_1.connectToDatabase);
 app.get("/api/ghost", DB_1.connectToDatabase);
-app.get("/api/ghost/:id", create_1.getUsers);
+app.post("/api/ghost", create_1.createUser);
+app.get("/api/ghost/:id", create_1.createUser);
 app.delete("/api/ghost/:id", delete_1.deleteUser);
+app.put("/api/ghost/:id", delete_1.deleteUser);
 /**Start MongoDB */
 /**End MongoDB */
 app.listen({ port: 8080 }, (err, address) => {

@@ -26,13 +26,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = void 0;
+exports.getUsers = void 0;
 const mongoDB = __importStar(require("mongodb"));
 const mongodb_1 = require("mongodb");
 const DB_1 = require("./../../DB");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-async function deleteUser(req, res) {
+async function getUsers(req, res) {
     const client = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`);
     await client.connect();
     const db = client.db(`${process.env.DB_NAME}`);
@@ -40,21 +40,16 @@ async function deleteUser(req, res) {
     DB_1.collections.users = usersCollection;
     const id = req?.params?.id;
     try {
+        const updatedGame = req.body;
         const query = { _id: new mongodb_1.ObjectId(id) };
-        const result = await DB_1.collections.users.deleteOne(query);
-        if (result && result.deletedCount) {
-            res.status(202).send(`Successfully removed user with id ${id}`);
-        }
-        else if (!result) {
-            res.status(400).send(`Failed to remove user with id ${id}`);
-        }
-        else if (!result.deletedCount) {
-            res.status(404).send(`User with id ${id} does not exist`);
-        }
+        const result = await DB_1.collections.users.updateOne(query, { $set: updatedGame });
+        result
+            ? res.status(200).send(`Successfully updated user with id ${id}`)
+            : res.status(304).send(`User with id: ${id} not updated`);
     }
     catch (error) {
         console.error(error);
         res.status(400).send(error);
     }
 }
-exports.deleteUser = deleteUser;
+exports.getUsers = getUsers;

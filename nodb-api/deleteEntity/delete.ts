@@ -2,8 +2,9 @@ import * as mongoDB from "mongodb";
 import { ObjectId } from "mongodb";
 import { collections } from "./../../DB";
 import dotenv from 'dotenv'; 
+import { FastifyReply } from "fastify";
 dotenv.config(); 
-export async function deleteUser(req: any, res: any) {
+export async function deleteUser(req: any, res: FastifyReply) {
   const client: mongoDB.MongoClient = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`
   );
 

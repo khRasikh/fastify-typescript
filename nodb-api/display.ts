@@ -1,10 +1,10 @@
 import * as mongoDB from "mongodb";
 import { ObjectId } from "mongodb";
-import { collections } from "./../../DB";
+import { collections } from "../DB";
 import dotenv from 'dotenv'; 
 import { FastifyRequest, FastifyReply } from "fastify";
 dotenv.config(); 
-export async function createUser(req: FastifyRequest, reply: FastifyReply) {
+export async function getUsers(req: FastifyRequest, reply: FastifyReply) {
   const client: mongoDB.MongoClient = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`
   );
 

@@ -2,9 +2,9 @@ import * as mongoDB from "mongodb";
 import { ObjectId } from "mongodb";
 import { collections } from "./../../DB";
 import dotenv from 'dotenv'; 
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyReply } from "fastify";
 dotenv.config(); 
-export async function createUser(req: FastifyRequest, reply: FastifyReply) {
+export async function getUsers(req: any, res: FastifyReply) {
   const client: mongoDB.MongoClient = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`
   );
 
@@ -17,17 +17,19 @@ export async function createUser(req: FastifyRequest, reply: FastifyReply) {
   collections.users = usersCollection;
   
 
-  // const id = req?.params?.id;
+  const id = req?.params?.id;
 
   try {
-    const newUser:any = req.body;
-    const result = await collections.users.insertOne(newUser);
+    const updatedGame = req.body;
+    const query = { _id: new ObjectId(id) };
+  
+    const result = await collections.users.updateOne(query, { $set: updatedGame });
 
     result
-        ? reply.status(201).send(`Successfully created a new user with id ${result.insertedId}`)
-        : reply.status(500).send("Failed to create a new user.");
+        ? res.status(200).send(`Successfully updated user with id ${id}`)
+        : res.status(304).send(`User with id: ${id} not updated`);
 } catch (error) {
     console.error(error);
-    reply.status(400).send(error);
+    res.status(400).send(error);
 }
 }
