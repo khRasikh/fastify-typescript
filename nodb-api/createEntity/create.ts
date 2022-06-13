@@ -1,16 +1,17 @@
 import * as mongoDB from "mongodb";
 import { ObjectId } from "mongodb";
 import { collections } from "./../../DB";
+import dotenv from 'dotenv'; 
+dotenv.config(); 
 export async function getUsers(req: any, reply: any) {
-  const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-    "mongodb://localhost:27017"
+  const client: mongoDB.MongoClient = new mongoDB.MongoClient(`${process.env.DB_CONN_STRING}`
   );
 
   await client.connect();
 
-  const db: mongoDB.Db = client.db("vertrical");
+  const db: mongoDB.Db = client.db(`${process.env.DB_NAME}`);
 
-  const usersCollection: mongoDB.Collection = db.collection("users");
+  const usersCollection: mongoDB.Collection = db.collection(`${process.env.COLLECTION_NAME}`);
 
   collections.users = usersCollection;
   
