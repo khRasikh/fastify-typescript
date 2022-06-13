@@ -1,7 +1,7 @@
 import fastify, { FastifyInstance } from 'fastify'; 
 import userController from './practice/controllers/userController'
 import DBConnection from '@fastify/mongodb'
-const app: FastifyInstance = fastify({ logger: true})
+const app: FastifyInstance = fastify({ logger: false})
 
 interface IQueryInterface {
   username: string,
@@ -36,17 +36,42 @@ Reply: IReply}>("/users", async(req, res)=>{
   console.log(result);   
   // Or this.mongo.client.db('mydb').collection('users')
 
-  return {code: 200 ,
+  return {
+    code: 200 ,
     message: "Success",
     body: "any" }
 })
 
 
 app.patch<{Querystring: IQueryInterface, Headers: IHeaders, 
-Reply: IReply}>("/users", userController)
+Reply: IReply}>("/users", userController)    
 
-     
+app.get<{Querystring: IQueryInterface, Headers: IHeaders, 
+  Reply: IReply}>("/db", connectToDatabase)    
 /**End */
+/**Start MongoDB */
+import * as mongoDB from "mongodb";
+import * as dotenv from "dotenv";
+export const collections: { games?: mongoDB.Collection } = {}
+export async function connectToDatabase () {
+  dotenv.config();
+
+  const client: mongoDB.MongoClient = new mongoDB.MongoClient("mongodb://localhost:27017");
+          
+  await client.connect();
+      
+  const db: mongoDB.Db = client.db("vertrical");
+ 
+  const gamesCollection: mongoDB.Collection = db.collection("users");
+
+  collections.games = gamesCollection;
+  console.log(`Successfully connected to database: ${db.databaseName} and collection: ${gamesCollection.collectionName}`);
+  const games = (await collections.games.find({}).toArray());
+  console.log(games)
+}
+
+ 
+/**End MongoDB */
 app.listen({ port: 8080 }, (err, address) => {
   if (err) {
     console.error(err)
